@@ -1,0 +1,8 @@
+<resources>
+    <style name="Theme.CardTrack" parent="android:Theme.Material.NoActionBar">
+        <item name="android:statusBarColor">#FF000000</item>
+        <item name="android:navigationBarColor">#FF000000</item>
+        <item name="android:windowBackground">#FF000000</item>
+        <item name="android:colorPrimary">#FFF7A600</item>
+    </style>
+</resources>

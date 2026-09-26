@@ -1,0 +1,21 @@
+.gradle/
+.idea/
+build/
+app/build/
+core/build/
+.cardtrack/
+local.properties
+*.iml
+.superpowers/
+.DS_Store
+*.jks
+*.keystore
+keystore.properties
+
+# Parallel-agent worktrees (same repo, isolated trees)
+.worktrees/
+
+# Local clone of Bybit V5 docs. Upstream has no license, so this tree is not published.
+# Refresh: docs/bybit-api/README.md
+docs/bybit-api/official-v5/
+docs/bybit-api/official-v5-sidebar.js

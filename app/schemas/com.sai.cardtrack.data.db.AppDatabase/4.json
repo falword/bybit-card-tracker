@@ -1,0 +1,212 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 4,
+    "identityHash": "e525c62ba5e4f63a6d479ff58149ee0f",
+    "entities": [
+      {
+        "tableName": "transactions",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`txnId` TEXT NOT NULL, `orderNo` TEXT, `kind` TEXT NOT NULL, `paidAmount` TEXT NOT NULL, `paidCurrency` TEXT NOT NULL, `merchantName` TEXT NOT NULL, `txnCreate` INTEGER NOT NULL, `status` TEXT NOT NULL, `bybitSide` TEXT NOT NULL, `categoryId` TEXT, `syncedAt` INTEGER NOT NULL, `source` TEXT NOT NULL, `declinedReason` TEXT NOT NULL, `mccCode` TEXT NOT NULL, `merchCategoryDesc` TEXT NOT NULL, `categoryOrigin` TEXT NOT NULL, `totalFees` TEXT NOT NULL, `foreignTransactionFee` TEXT NOT NULL, `withdrawalFee` TEXT NOT NULL, `fxPad` TEXT NOT NULL, `totalTax` TEXT NOT NULL, `billAmount` TEXT NOT NULL, `transactionAmount` TEXT NOT NULL, `transactionCurrency` TEXT NOT NULL, PRIMARY KEY(`txnId`))",
+        "fields": [
+          {
+            "fieldPath": "txnId",
+            "columnName": "txnId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "orderNo",
+            "columnName": "orderNo",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "kind",
+            "columnName": "kind",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "paidAmount",
+            "columnName": "paidAmount",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "paidCurrency",
+            "columnName": "paidCurrency",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "merchantName",
+            "columnName": "merchantName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "txnCreate",
+            "columnName": "txnCreate",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "status",
+            "columnName": "status",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "bybitSide",
+            "columnName": "bybitSide",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "categoryId",
+            "columnName": "categoryId",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "syncedAt",
+            "columnName": "syncedAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "source",
+            "columnName": "source",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "declinedReason",
+            "columnName": "declinedReason",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mccCode",
+            "columnName": "mccCode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "merchCategoryDesc",
+            "columnName": "merchCategoryDesc",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "categoryOrigin",
+            "columnName": "categoryOrigin",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "totalFees",
+            "columnName": "totalFees",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "foreignTransactionFee",
+            "columnName": "foreignTransactionFee",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "withdrawalFee",
+            "columnName": "withdrawalFee",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fxPad",
+            "columnName": "fxPad",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "totalTax",
+            "columnName": "totalTax",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "billAmount",
+            "columnName": "billAmount",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transactionAmount",
+            "columnName": "transactionAmount",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transactionCurrency",
+            "columnName": "transactionCurrency",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "txnId"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "budgets",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`year` INTEGER NOT NULL, `month` INTEGER NOT NULL, `categoryKey` TEXT NOT NULL, `limitAmount` TEXT NOT NULL, PRIMARY KEY(`year`, `month`, `categoryKey`))",
+        "fields": [
+          {
+            "fieldPath": "year",
+            "columnName": "year",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "month",
+            "columnName": "month",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "categoryKey",
+            "columnName": "categoryKey",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "limitAmount",
+            "columnName": "limitAmount",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "year",
+            "month",
+            "categoryKey"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e525c62ba5e4f63a6d479ff58149ee0f')"
+    ]
+  }
+}

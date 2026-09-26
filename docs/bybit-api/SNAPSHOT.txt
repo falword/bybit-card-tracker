@@ -1,0 +1,5 @@
+source: https://github.com/bybit-exchange/docs
+site: https://bybit-exchange.github.io/docs/v5/guide
+commit: 9aeb1b1b38bca8538567eee391a862e4187c95f0
+checked: 2026-09-06T04:37:41Z
+note: full docs/v5 tree is a local gitignored clone, not part of this repository
