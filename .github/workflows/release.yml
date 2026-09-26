@@ -1,0 +1,31 @@
+name: release
+on:
+  push:
+    tags:
+      - "v*"
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Publish signed APK
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          apk=$(ls dist/CardTrack-*.apk)
+          test "$(printf '%s\n' "$apk" | wc -l)" -eq 1
+          version="${GITHUB_REF_NAME#v}"
+          sha=$(sha256sum "$apk" | awk '{print $1}')
+          gh release create "$GITHUB_REF_NAME" "$apk" \
+            --title "CardTrack $version" \
+            --notes "$(printf '%s\n' \
+              "Install CardTrack ${version} on Android 8.0 or newer." \
+              "" \
+              "Open the APK and allow installation from your browser or files app when Android asks." \
+              "A newer APK installs over this one and keeps the app data, because every public build uses the same signing key." \
+              "" \
+              "SHA-256: ${sha}" \
+              "" \
+              "This is not a Google Play listing and not an official Bybit app.")"
