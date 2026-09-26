@@ -6,11 +6,21 @@ This project is not affiliated with Bybit. Bybit's API terms and regional limits
 
 API keys never leave the device. See [docs/PRIVACY.md](docs/PRIVACY.md).
 
+## Screenshots
+
+Sample merchants and amounts. The phone language can be Russian; switch it in Settings.
+
+<p>
+  <img src="docs/screenshots/home.png" width="220" alt="September ledger with balance, expenses, income, cashback, and transactions">
+  <img src="docs/screenshots/categories.png" width="220" alt="Spending broken down by category">
+  <img src="docs/screenshots/settings.png" width="220" alt="Settings with the key hint and a button to delete the key and local history">
+</p>
+
 ## Install
 
-Download the signed APK from the latest [GitHub Release](https://github.com/falword/bybit-card-tracker/releases/latest). It needs Android 8.0 or newer. Open the file and allow installation from the browser or files app when Android asks. This is not a Play Store listing.
+Download [CardTrack.apk](https://github.com/falword/bybit-card-tracker/releases/latest/download/CardTrack.apk). Each push to `main` replaces that file with a newly signed build. It needs Android 8.0 or newer. Open the file and allow installation from the browser or files app when Android asks. This is not a Play Store listing.
 
-The same file is in [`dist/CardTrack-1.0.5.apk`](dist/CardTrack-1.0.5.apk). SHA-256: `84ecfd8f2fee29123e6adf765e3f299966849183fa3faaa428eb2edd45967b14`. A newer APK installs over this one and keeps the app data, because every public build uses the same signing key. That key stays on the maintainer's machine. See [docs/RELEASE.md](docs/RELEASE.md).
+Installing a newer APK over the previous one keeps the app data, because every published build uses the same signing key. The key stays out of git. See [docs/RELEASE.md](docs/RELEASE.md). The release notes include the commit and the SHA-256 of that build.
 
 ## Features
 
@@ -82,9 +92,9 @@ GitHub Actions runs `./gradlew test lintRelease assembleRelease` on each push an
 | --- | --- |
 | `app/` | Android UI, Room database, keystore. |
 | `core/` | Bybit client, sync, and domain logic. Pure JVM, so unit tests do not need a device. |
+| `docs/screenshots/` | README images of the month, categories, and settings screens. |
 | `docs/PRIVACY.md` | What stays on the phone. |
-| `docs/RELEASE.md` | How to sign a release build without committing the keystore. |
-| `dist/` | The signed APK published with each GitHub Release. |
+| `docs/RELEASE.md` | How pushes to `main` publish a signed APK without committing the keystore. |
 | `docs/bybit-api/` | Which Bybit endpoints this app calls, and the limits it follows. |
 
 The full official V5 markdown is not in this repository. [docs/bybit-api/README.md](docs/bybit-api/README.md) explains how to clone it locally before changing a request.
@@ -97,9 +107,9 @@ The full official V5 markdown is not in this repository. [docs/bybit-api/README.
 
 CardTrack — трекер карты Bybit на самом телефоне. Приложение забирает операции карты, переводы и funding из API Bybit и хранит их локально: месяцы, категории, отказы и повторяющиеся списания. Сервера CardTrack нет, ключ с устройства не уходит. Подробности: [docs/PRIVACY.md](docs/PRIVACY.md).
 
-Это не официальное приложение Bybit.
+Это не официальное приложение Bybit. Снимки экрана — в начале страницы. Суммы на них выдуманные. Язык интерфейса переключается в настройках, в том числе на русский.
 
-**Установка.** Скачайте подписанный APK из [последнего Release](https://github.com/falword/bybit-card-tracker/releases/latest) или из [`dist/CardTrack-1.0.5.apk`](dist/CardTrack-1.0.5.apk). Нужен Android 8.0+. Откройте файл и разрешите установку, когда Android спросит. Это не страница в Play Store. Следующая версия ставится поверх и сохраняет данные: все публичные сборки подписаны одним ключом.
+**Установка.** Скачайте [CardTrack.apk](https://github.com/falword/bybit-card-tracker/releases/latest/download/CardTrack.apk). Каждый push в `main` заменяет этот файл новой подписанной сборкой. Нужен Android 8.0+. Откройте файл и разрешите установку, когда Android спросит. Это не страница в Play Store. Новая сборка ставится поверх и сохраняет данные: все публичные сборки подписаны одним ключом.
 
 **Сборка.** Нужен JDK 17 и Android 8.0+.
 

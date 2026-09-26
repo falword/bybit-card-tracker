@@ -8,12 +8,21 @@ plugins {
 android {
     namespace = "com.sai.cardtrack"
     compileSdk = 35
+    val publishedVersionCode = (
+        (project.findProperty("CARDTRACK_VERSION_CODE") as String?)
+            ?: System.getenv("CARDTRACK_VERSION_CODE")
+        )?.toIntOrNull()
+    val publishedVersionName = (
+        (project.findProperty("CARDTRACK_VERSION_NAME") as String?)
+            ?: System.getenv("CARDTRACK_VERSION_NAME")
+        )?.takeIf { it.isNotBlank() }
     defaultConfig {
         applicationId = "com.sai.cardtrack"
         minSdk = 26
         targetSdk = 35
-        versionCode = 6
-        versionName = "1.0.5"
+        // Local builds stay on 6 / 1.0.5. CI sets a higher code so each main push installs over the last one.
+        versionCode = publishedVersionCode ?: 6
+        versionName = publishedVersionName ?: "1.0.5"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     signingConfigs {
@@ -55,6 +64,7 @@ android {
     }
     testOptions {
         unitTests.isReturnDefaultValues = true
+        unitTests.isIncludeAndroidResources = true
     }
 }
 
@@ -91,4 +101,22 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
     testImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
     testImplementation("org.json:json:20240303")
+    // Renders README screenshots. Not part of `./gradlew test` unless -PreadmeShots=true.
+    testImplementation(platform("androidx.compose:compose-bom:2024.12.01"))
+    testImplementation("androidx.compose.ui:ui-test-junit4")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
+    testImplementation("org.robolectric:robolectric:4.14.1")
+}
+
+tasks.withType<org.gradle.api.tasks.testing.Test>().configureEach {
+    if (project.findProperty("readmeShots") == "true") {
+        systemProperty(
+            "readmeShotsDir",
+            rootProject.layout.projectDirectory.dir("docs/screenshots").asFile.absolutePath
+        )
+    } else {
+        filter {
+            excludeTestsMatching("com.sai.cardtrack.ui.ReadmeShots")
+        }
+    }
 }

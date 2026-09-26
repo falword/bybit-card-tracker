@@ -2,6 +2,8 @@ name: ci
 on:
   push:
   pull_request:
+permissions:
+  contents: read
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -13,3 +15,78 @@ jobs:
           java-version: 17
       - uses: android-actions/setup-android@v4
       - run: ./gradlew test lintRelease assembleRelease --stacktrace
+  publish:
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: android-actions/setup-android@v4
+      - name: Decode release keystore
+        env:
+          CARDTRACK_KEYSTORE_BASE64: ${{ secrets.CARDTRACK_KEYSTORE_BASE64 }}
+        run: |
+          test -n "$CARDTRACK_KEYSTORE_BASE64"
+          printf '%s' "$CARDTRACK_KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.jks"
+          test -s "$RUNNER_TEMP/release.jks"
+      - name: Sign release APK
+        env:
+          CARDTRACK_STORE_FILE: ${{ runner.temp }}/release.jks
+          CARDTRACK_STORE_PASSWORD: ${{ secrets.CARDTRACK_STORE_PASSWORD }}
+          CARDTRACK_KEY_ALIAS: cardtrack
+          CARDTRACK_KEY_PASSWORD: ${{ secrets.CARDTRACK_KEY_PASSWORD }}
+        run: |
+          test -n "$CARDTRACK_STORE_PASSWORD"
+          test -n "$CARDTRACK_KEY_PASSWORD"
+          code=$((10000 + GITHUB_RUN_NUMBER))
+          name="1.0.5+${GITHUB_SHA::7}"
+          export CARDTRACK_VERSION_CODE="$code"
+          export CARDTRACK_VERSION_NAME="$name"
+          echo "CARDTRACK_VERSION_CODE=$code" >> "$GITHUB_ENV"
+          echo "CARDTRACK_VERSION_NAME=$name" >> "$GITHUB_ENV"
+          ./gradlew :app:assembleRelease --stacktrace
+      - name: Check signing certificate
+        run: |
+          sdk="${ANDROID_HOME:-$ANDROID_SDK_ROOT}"
+          apksigner=$(find "$sdk" -type f -name apksigner | sort | tail -1)
+          test -n "$apksigner"
+          apk=app/build/outputs/apk/release/app-release.apk
+          digest=$("$apksigner" verify --print-certs "$apk" | awk -F': ' '/certificate SHA-256 digest/{print $2; exit}')
+          expected=0cb93e71dab399fd75d9c2d235dce2eceb8e53a0c74422e9f5116d32fc8817ff
+          test "$digest" = "$expected"
+          cp "$apk" "$RUNNER_TEMP/CardTrack.apk"
+          sha256sum "$RUNNER_TEMP/CardTrack.apk" | awk '{print $1}' > "$RUNNER_TEMP/apk.sha256"
+      - name: Publish CardTrack.apk
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          sha=$(cat "$RUNNER_TEMP/apk.sha256")
+          version="${CARDTRACK_VERSION_NAME}"
+          code="${CARDTRACK_VERSION_CODE}"
+          notes="$RUNNER_TEMP/notes.md"
+          printf '%s\n' \
+            "Install CardTrack on Android 8.0 or newer." \
+            "" \
+            "This file is replaced on every push to main." \
+            "Build ${version}, versionCode ${code}, commit ${GITHUB_SHA}." \
+            "Installing it over the previous APK keeps the app data, because every build uses the same signing key." \
+            "" \
+            "SHA-256: ${sha}" \
+            "" \
+            "This is not a Google Play listing and not an official Bybit app." > "$notes"
+          if gh release view continuous >/dev/null 2>&1; then
+            gh release upload continuous "$RUNNER_TEMP/CardTrack.apk" --clobber
+            gh release edit continuous --target "$GITHUB_SHA" --latest --title "CardTrack" --notes-file "$notes"
+          else
+            gh release create continuous "$RUNNER_TEMP/CardTrack.apk" \
+              --target "$GITHUB_SHA" \
+              --latest \
+              --title "CardTrack" \
+              --notes-file "$notes"
+          fi
