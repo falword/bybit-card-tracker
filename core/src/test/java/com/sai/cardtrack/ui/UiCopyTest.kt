@@ -92,6 +92,8 @@ class UiCopyTest {
         assertEquals("simple", en.simplified)
         assertEquals("полный", ru.detailed)
         assertEquals("full", en.detailed)
+        assertEquals("разбивка", ru.toBreakdown)
+        assertEquals("breakdown", en.toBreakdown)
         assertEquals("Таблица всех операций: дата, мерчант, сумма, категория.", ru.exportCsvHint)
         assertEquals("Для импорта в Koinly: покупки, возвраты и пополнения.", ru.exportKoinlyHint)
     }

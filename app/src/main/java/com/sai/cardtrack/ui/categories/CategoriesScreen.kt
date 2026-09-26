@@ -2,7 +2,10 @@ package com.sai.cardtrack.ui.categories
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,7 +15,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.animation.core.Animatable
@@ -35,6 +37,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -78,7 +81,8 @@ fun CategoriesScreen(
             },
             onPrev = { viewModel.prevMonth() },
             onNext = { viewModel.nextMonth() },
-            onCompare = { viewModel.onCompareToggle() }
+            onCompare = { viewModel.onCompareToggle() },
+            onGrain = { viewModel.onGrainToggle() }
         )
         Spacer(Modifier.height(16.dp))
         if (state.mode != CategoriesMode.History) {
@@ -131,34 +135,105 @@ private fun CategoriesHeader(
     onBack: () -> Unit,
     onPrev: () -> Unit,
     onNext: () -> Unit,
-    onCompare: () -> Unit
+    onCompare: () -> Unit,
+    onGrain: () -> Unit
 ) {
     val colors = LocalCardTrackColors.current
+    val copy = LocalUiCopy.current
     if (!state.showMonthNav) {
         AppTopBar(title = state.title, onBack = onBack)
         return
     }
-    Row(
-        Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        MonthSwitcher(
-            monthLabel = state.monthLabel,
-            onPrev = onPrev,
-            onNext = onNext,
-            onBack = onBack,
-            modifier = Modifier.weight(1f)
-        )
-        if (state.showCompareAction) {
-            Text(
-                state.compareActionLabel,
-                style = MaterialTheme.typography.bodySmall,
-                color = colors.brandText,
-                modifier = Modifier
-                    .heightIn(min = 48.dp)
-                    .clickable(role = Role.Button, onClick = onCompare)
-                    .padding(horizontal = 4.dp, vertical = 14.dp)
+    Column(Modifier.fillMaxWidth()) {
+        Row(
+            Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            MonthSwitcher(
+                monthLabel = state.monthLabel,
+                onPrev = onPrev,
+                onNext = onNext,
+                onBack = onBack,
+                modifier = Modifier.weight(1f)
             )
+            if (state.showCompareAction) {
+                Box(
+                    Modifier
+                        .height(48.dp)
+                        .clickable(role = Role.Button, onClick = onCompare),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        state.compareActionLabel,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = colors.brandText,
+                        maxLines = 1,
+                        softWrap = false
+                    )
+                }
+            }
+        }
+        if (state.showCompareAction) {
+            Spacer(Modifier.height(8.dp))
+            GrainSwitch(
+                simplified = state.simplified,
+                simpleLabel = copy.simplified,
+                fullLabel = copy.detailed,
+                onGrain = onGrain
+            )
+        }
+    }
+}
+
+@Composable
+private fun GrainSwitch(
+    simplified: Boolean,
+    simpleLabel: String,
+    fullLabel: String,
+    onGrain: () -> Unit
+) {
+    val colors = LocalCardTrackColors.current
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(10.dp))
+            .background(colors.areaBg)
+            .selectableGroup()
+            .padding(4.dp)
+    ) {
+        listOf(true to simpleLabel, false to fullLabel).forEach { (value, label) ->
+            val on = value == simplified
+            Box(
+                Modifier
+                    .weight(1f)
+                    .height(48.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(if (on) colors.cardBg else colors.areaBg)
+                    .then(
+                        if (on) {
+                            Modifier.border(1.dp, colors.brand.copy(alpha = 0.45f), RoundedCornerShape(8.dp))
+                        } else {
+                            Modifier
+                        }
+                    )
+                    .selectable(
+                        selected = on,
+                        role = Role.RadioButton,
+                        onClick = { if (!on) onGrain() }
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    label,
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        fontWeight = if (on) FontWeight.SemiBold else FontWeight.Normal
+                    ),
+                    color = if (on) colors.textMain else colors.textMute,
+                    textAlign = TextAlign.Center,
+                    maxLines = 1,
+                    softWrap = false
+                )
+            }
         }
     }
 }

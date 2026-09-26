@@ -11,9 +11,14 @@ API keys never leave the device. See [docs/PRIVACY.md](docs/PRIVACY.md).
 Sample merchants and amounts. The phone language can be Russian; switch it in Settings.
 
 <p>
-  <img src="docs/screenshots/home.png" width="220" alt="September ledger with balance, expenses, income, cashback, and transactions">
-  <img src="docs/screenshots/categories.png" width="220" alt="Spending broken down by category">
-  <img src="docs/screenshots/settings.png" width="220" alt="Settings with the key hint and a button to delete the key and local history">
+  <img src="docs/screenshots/home.png" width="220" alt="September ledger with a balance ring, expenses, income, Tier 2 cashback, fees, and a fee on a purchase">
+  <img src="docs/screenshots/categories.png" width="220" alt="Spending by parent category, simplified">
+  <img src="docs/screenshots/categories-full.png" width="220" alt="Spending by subcategory">
+</p>
+<p>
+  <img src="docs/screenshots/compare.png" width="220" alt="Month comparison, simplified">
+  <img src="docs/screenshots/compare-full.png" width="220" alt="Month comparison by subcategory">
+  <img src="docs/screenshots/settings.png" width="220" alt="Settings with CSV and Koinly export, the key hint, and a button to delete the key and local history">
 </p>
 
 ## Install
@@ -92,7 +97,7 @@ GitHub Actions runs `./gradlew test lintRelease assembleRelease` on each push an
 | --- | --- |
 | `app/` | Android UI, Room database, keystore. |
 | `core/` | Bybit client, sync, and domain logic. Pure JVM, so unit tests do not need a device. |
-| `docs/screenshots/` | README images of the month, categories, and settings screens. |
+| `docs/screenshots/` | README images of the month, categories, month comparison, and settings screens. |
 | `docs/PRIVACY.md` | What stays on the phone. |
 | `docs/RELEASE.md` | How pushes to `main` publish a signed APK without committing the keystore. |
 | `docs/bybit-api/` | Which Bybit endpoints this app calls, and the limits it follows. |

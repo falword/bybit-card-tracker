@@ -183,7 +183,7 @@ class UiCopy(val locale: AppLocale) {
     fun lastSyncAt(whenLabel: String): String = t("Обновлено в $whenLabel", "Updated at $whenLabel")
     val noExpenses: String get() = t("нет расходов", "no expenses")
     val compare: String get() = t("сравнить", "compare")
-    val toBreakdown: String get() = t("к разбивке", "to breakdown")
+    val toBreakdown: String get() = t("разбивка", "breakdown")
     val simplified: String get() = t("упрощённый", "simple")
     val detailed: String get() = t("полный", "full")
     val category: String get() = t("Категория", "Category")

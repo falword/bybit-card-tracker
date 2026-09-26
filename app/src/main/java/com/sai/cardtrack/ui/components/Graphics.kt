@@ -87,10 +87,9 @@ private val Ember = Color(0xFFFF6A3D)
 private val GoldLight = Color(0xFFFFD66B)
 private val GoldDeep = Color(0xFFB87900)
 
-/** Shared aurora strength for home and secondary screens (see [ScreenScaffold]). */
+/** Shared aurora strength for every screen, including loading. */
 object AuroraIntensity {
-    const val screen = 0.6f
-    const val full = 1f
+    const val screen = 0.7f
 }
 
 fun CardTrackColors.isDark(): Boolean = pageBg.luminance() < 0.5f

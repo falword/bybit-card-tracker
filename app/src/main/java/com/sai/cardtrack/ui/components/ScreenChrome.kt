@@ -318,7 +318,7 @@ fun PageLoading(modifier: Modifier = Modifier) {
             .background(colors.pageBg),
         contentAlignment = Alignment.Center
     ) {
-        AuroraBackdrop(intensity = AuroraIntensity.full)
+        AuroraBackdrop(intensity = AuroraIntensity.screen)
         CardOrbit(Modifier.size(140.dp))
     }
 }

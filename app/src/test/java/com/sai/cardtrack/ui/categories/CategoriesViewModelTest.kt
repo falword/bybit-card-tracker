@@ -119,7 +119,7 @@ class CategoriesViewModelTest {
         categories.onCompareToggle()
         advanceUntilIdle()
         assertEquals(CategoriesMode.Compare, categories.state.value.mode)
-        assertEquals("к разбивке", categories.state.value.compareActionLabel)
+        assertEquals("разбивка", categories.state.value.compareActionLabel)
         assertEquals(4, categories.state.value.compareMonthLabels.size)
         assertEquals(shortMonth(2026, 9), categories.state.value.compareMonthLabels.first())
         assertEquals(shortMonth(2026, 6), categories.state.value.compareMonthLabels.last())
