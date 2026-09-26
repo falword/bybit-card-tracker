@@ -57,9 +57,16 @@ jobs:
           apksigner=$(find "$sdk" -type f -name apksigner | sort | tail -1)
           test -n "$apksigner"
           apk=app/build/outputs/apk/release/app-release.apk
-          digest=$("$apksigner" verify --print-certs "$apk" | awk -F': ' '/certificate SHA-256 digest/{print $2; exit}')
+          # build-tools 37 prints "V3.0 Signer: certificate SHA-256 digest: <hex>".
+          # The colon after the scheme makes $2 the label; the hex is the last field.
+          digest=$("$apksigner" verify --print-certs "$apk" | awk -F': ' '/certificate SHA-256 digest/{print $NF; exit}')
           expected=0cb93e71dab399fd75d9c2d235dce2eceb8e53a0c74422e9f5116d32fc8817ff
-          test "$digest" = "$expected"
+          if [ "$digest" != "$expected" ]; then
+            echo "apksigner: $apksigner" >&2
+            echo "certificate SHA-256 digest: ${digest:-<empty>}" >&2
+            echo "expected: $expected" >&2
+            exit 1
+          fi
           cp "$apk" "$RUNNER_TEMP/CardTrack.apk"
           sha256sum "$RUNNER_TEMP/CardTrack.apk" | awk '{print $1}' > "$RUNNER_TEMP/apk.sha256"
       - name: Publish CardTrack.apk
